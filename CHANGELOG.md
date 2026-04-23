@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to {{PROJECT_NAME}} will be documented here.
+All notable changes to AusomeWords will be documented here.
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [SemVer](https://semver.org/spec/v2.0.0.html).
@@ -18,10 +18,9 @@ Categories: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**, **Se
 ### Fixed
 - (nothing yet)
 
-## [0.1.0] — {{CURRENT_DATE}}
+## [0.1.0] — 2026-04-23
 
-Initial scaffold. No runtime code — establishes the docs and structure
-Claude Code needs to work effectively in this repo.
+Initial scaffold + first app file.
 
 ### Added
 - `CLAUDE.md` — entry point for Claude Code.
@@ -29,6 +28,9 @@ Claude Code needs to work effectively in this repo.
   `.ai/prompts.md`, `.ai/metrics.md`.
 - `README.md`, `docs/workflow.md`, `docs/architecture.md`.
 - `.gitignore`, `CHANGELOG.md`.
+- `index.html` — full AAC app: starters → categories → items → speak,
+  Web Speech API sentence builder, Web Audio API celebration chimes,
+  iOS/Safari optimised layout.
 
-[Unreleased]: https://github.com/<org>/{{PROJECT_NAME}}/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/<org>/{{PROJECT_NAME}}/releases/tag/v0.1.0
+[Unreleased]: https://github.com/ytap1/AusomeWords/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/ytap1/AusomeWords/releases/tag/v0.1.0

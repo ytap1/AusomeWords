@@ -1,4 +1,4 @@
-# Conventions: {{PROJECT_NAME}}
+# Conventions: AusomeWords
 
 Rules Claude must follow when writing code in this repo. When a rule
 conflicts with a framework default, the rule wins — log the exception

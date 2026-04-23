@@ -1,12 +1,12 @@
-# {{PROJECT_NAME}}
+# AusomeWords
 
-> {{PROJECT_DESCRIPTION}}
+> An AAC (Augmentative and Alternative Communication) app for autistic children to build and speak sentences using emoji picture cards.
 
 ## Status
 
-- **Phase:** pre-alpha
+- **Phase:** alpha
 - **Version:** 0.1.0 (see [CHANGELOG.md](./CHANGELOG.md))
-- **Last updated:** {{CURRENT_DATE}}
+- **Last updated:** 2026-04-23
 - **Deployed?** No.
 
 ## How Work Happens Here
@@ -14,22 +14,23 @@
 - Edits via Claude Code (GitHub integration) or the GitHub web editor on Safari.
 - No local dev, no terminal, no package managers — never assume them.
 - Push directly to `main` by default. Branch only for destructive or high-risk changes.
-- Deploy is auto-triggered on push to `main` (GitHub Pages or Netlify, per project).
+- Deploy is auto-triggered on push to `main` (GitHub Pages).
 - Verification happens on the deployed preview, not on a localhost.
 
 See [docs/workflow.md](./docs/workflow.md) for the full working model.
 
 ## What Works
 
+- Full app structure in `index.html`: starters → categories → items → speak.
+- Web Speech API sentence builder with word-by-word preview.
+- Web Audio API celebration chime on sentence completion.
+- iOS/Safari optimised layout (safe-area insets, touch targets).
 - AI-first docs in [`.ai/`](./.ai/).
-- `CHANGELOG.md`, `docs/`, `.gitignore` scaffolding.
-
-Replace this with real shipped features as they land.
 
 ## What's Next
 
-- [ ] Pick the stack and fill in `.ai/context.md` (`{{TECH_STACK}}`).
-- [ ] First end-to-end feature slice, deployed.
+- [ ] Wire up GitHub Pages deploy.
+- [ ] First end-to-end verification on a real device.
 
 ## Documentation
 
