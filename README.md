@@ -21,7 +21,7 @@ See [docs/workflow.md](./docs/workflow.md) for the full working model.
 
 ## What Works
 
-- Full app structure in `Index.html`: starters → categories → items → speak.
+- Full app structure in `index.html`: starters → categories → items → speak.
 - Web Speech API sentence builder with word-by-word preview.
 - Web Audio API celebration chime on sentence completion.
 - iOS/Safari optimised layout (safe-area insets, touch targets).

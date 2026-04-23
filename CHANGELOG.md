@@ -28,7 +28,7 @@ Initial scaffold + first app file.
   `.ai/prompts.md`, `.ai/metrics.md`.
 - `README.md`, `docs/workflow.md`, `docs/architecture.md`.
 - `.gitignore`, `CHANGELOG.md`.
-- `Index.html` — full AAC app: starters → categories → items → speak,
+- `index.html` — full AAC app: starters → categories → items → speak,
   Web Speech API sentence builder, Web Audio API celebration chimes,
   iOS/Safari optimised layout.
 

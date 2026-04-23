@@ -42,14 +42,14 @@ Hard rules about how work happens here. Do not violate without asking.
 
 ## Key Constraints
 
-- Single HTML file (`Index.html`) — no build step, no bundler, no package manager.
+- Single HTML file (`index.html`) — no build step, no bundler, no package manager.
 - No new top-level dependencies without an ADR.
 - App is fully client-side; no secrets, no backend.
 - All verification happens on the GitHub Pages deploy preview — not localhost.
 
 ## Entry Points
 
-- **Main file:** `Index.html`
+- **Main file:** `index.html`
 - **Config:** none (no build config; deploy via GitHub Pages repo settings)
 - **Tests:** none yet
 - **Deploy config:** GitHub Pages auto-deploy (push to `main`)

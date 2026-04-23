@@ -8,7 +8,7 @@ architecture docs are worse than none.
 ```
 AusomeWords/
 ├── CLAUDE.md                 # Claude Code reads this first
-├── Index.html                # entire app — HTML + CSS + JS, single file
+├── index.html                # entire app — HTML + CSS + JS, single file
 ├── .ai/                      # AI-first context
 │   ├── context.md
 │   ├── conventions.md
