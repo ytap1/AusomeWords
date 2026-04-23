@@ -1,4 +1,4 @@
-# Metrics: {{PROJECT_NAME}}
+# Metrics: AusomeWords
 
 Track AI-assisted work so later you can tell what actually helped.
 Add a row per meaningful session ("meaningful" = code shipped, not
@@ -17,7 +17,7 @@ Add a row per meaningful session ("meaningful" = code shipped, not
 
 | Date             | Feature                  | Sessions | Tokens | Bugs Found | Notes                                |
 |------------------|--------------------------|----------|--------|------------|--------------------------------------|
-| {{CURRENT_DATE}} | repo scaffolding (.ai/*) | 1        | ~12k   | 0          | Initial template. No app code yet.   |
+| 2026-04-23 | repo scaffolding (.ai/*) | 1        | ~12k   | 0          | Initial template. No app code yet.   |
 
 ## Rollups (update weekly)
 

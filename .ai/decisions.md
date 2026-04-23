@@ -1,4 +1,4 @@
-# Decisions: {{PROJECT_NAME}}
+# Decisions: AusomeWords
 
 Append-only log of architectural and technical decisions. Each entry
 answers: what did we pick, what did we reject, and why?
@@ -36,7 +36,7 @@ answers: what did we pick, what did we reject, and why?
 
 ## ADR-0001: Push directly to `main`; branch only for destructive changes
 
-- **Date:** {{CURRENT_DATE}}
+- **Date:** 2026-04-23
 - **Status:** Accepted
 
 ### Context
