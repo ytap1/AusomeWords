@@ -29,7 +29,6 @@ See [docs/workflow.md](./docs/workflow.md) for the full working model.
 
 ## What's Next
 
-- [ ] Fix CSS variable en-dash bug in `Index.html` (colours not resolving).
 - [ ] Wire up GitHub Pages deploy.
 - [ ] First end-to-end verification on a real device.
 

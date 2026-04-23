@@ -19,7 +19,7 @@ AusomeWords is an AAC (Augmentative and Alternative Communication) app for autis
 - **Version:** 0.1.0
 - **Deployed?** No
 - **Users?** None
-- **Known broken:** CSS `var()` calls in `Index.html` use en-dashes (`–`) instead of double-dashes (`--`), so all colour variables fail to resolve.
+- **Known broken:** none
 
 ## Stack
 
