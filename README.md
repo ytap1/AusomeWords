@@ -21,16 +21,21 @@ See [docs/workflow.md](./docs/workflow.md) for the full working model.
 
 ## What Works
 
-- Full app structure in `index.html`: starters → categories → items → speak.
-- Web Speech API sentence builder with word-by-word preview.
+- Sentence builder: I want / I need / Say → categories → items → speak.
+- Vocabulary matched to the child's known words (burger, chicken and rice, cupcakes, run, jump, slides, tickle time, hide and seek, bubu, yes/no/please/borrow).
+- Social words ("Say" starter) speak immediately on tap.
+- Colors category with colored-object cards (red car, blue ball, yellow sun, etc.).
+- Gentle correction mode — parent toggle (off by default) showing "Try saying: …" with article + "please" suggestions.
+- Level indicator (★ L1 / L2 / L3) and settings bottom sheet, parent-controlled.
+- Web Speech API sentence builder with word-by-word audio preview.
 - Web Audio API celebration chime on sentence completion.
-- iOS/Safari optimised layout (safe-area insets, touch targets).
+- iOS/Safari optimised layout (safe-area insets, 44 pt touch targets).
 - AI-first docs in [`.ai/`](./.ai/).
 
 ## What's Next
 
-- [ ] Wire up GitHub Pages deploy.
-- [ ] First end-to-end verification on a real device.
+- [ ] Wire up GitHub Pages deploy and verify on device.
+- [ ] Level 3 navigation: color + noun phrase flow (starter → color → noun).
 
 ## Documentation
 

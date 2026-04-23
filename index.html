@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -40,13 +39,19 @@ border-bottom: 4px solid #F0F2F5; flex-shrink: 0; min-height: 56px;
 .app-title .t5 { color: var(--c-blue); }
 .app-title .t6 { color: var(--c-purple); }
 .app-title .t7 { color: var(--c-pink); }
-.restart-btn {
-background: var(--surface); color: var(--ink);
-padding: 10px 14px; border-radius: 12px;
-font-size: 15px; font-weight: 800; min-height: 44px;
-display: inline-flex; align-items: center; gap: 4px;
+.header-actions { display: flex; align-items: center; gap: 8px; }
+.level-badge {
+background: var(--c-yellow); color: var(--ink);
+padding: 5px 10px; border-radius: 10px;
+font-size: 13px; font-weight: 800; white-space: nowrap;
 }
-.restart-btn:active { transform: scale(0.95); }
+.settings-btn, .restart-btn {
+background: var(--surface); color: var(--ink);
+padding: 0; border-radius: 12px; font-size: 18px;
+min-height: 44px; min-width: 44px;
+display: inline-flex; align-items: center; justify-content: center;
+}
+.settings-btn:active, .restart-btn:active { transform: scale(0.95); }
 
 .sentence-bar {
 background: #FFFFFF; border-bottom: 4px solid #F0F2F5;
@@ -58,7 +63,7 @@ padding: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
 border: 3px dashed #D5DBE1;
 }
 .sentence-display.empty::before {
-content: “Tap a card below to start…”;
+content: "Tap a card below to start…";
 color: #95A5A6; font-size: 15px; font-style: italic;
 }
 .sentence-word {
@@ -111,14 +116,68 @@ gap: 8px; transition: transform 0.1s; color: var(--ink);
 .card.c-pink   { border-color: var(--c-pink); }
 .card-emoji { font-size: 48px; line-height: 1; }
 .card-label { font-size: 16px; font-weight: 800; text-align: center; color: var(--ink); }
-
 .starter-card { background: var(--c-blue); border-color: var(--c-blue); }
 .starter-card .card-label { color: #FFFFFF; font-size: 22px; font-weight: 900; }
+
+.suggestion-banner {
+background: #FFFBEA; border: 2px solid var(--c-yellow);
+border-radius: 14px; padding: 12px 16px; margin-bottom: 14px;
+font-size: 15px; color: var(--ink); line-height: 1.5;
+animation: popIn 0.3s ease-out;
+}
+.suggestion-label { font-weight: 800; color: var(--c-orange); margin-right: 4px; }
+
+.settings-overlay {
+position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+z-index: 100; display: flex; align-items: flex-end;
+}
+.settings-panel {
+background: #FFFFFF; width: 100%; border-radius: 24px 24px 0 0;
+padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+max-height: 80vh; overflow-y: auto;
+}
+.settings-header {
+display: flex; align-items: center; justify-content: space-between;
+margin-bottom: 20px;
+}
+.settings-title { font-size: 18px; font-weight: 900; }
+.settings-close {
+background: var(--surface); border-radius: 10px; padding: 0;
+font-size: 18px; font-weight: 800; color: var(--ink);
+min-height: 44px; min-width: 44px;
+display: inline-flex; align-items: center; justify-content: center;
+}
+.settings-section { margin-bottom: 24px; }
+.settings-section-label {
+font-size: 12px; font-weight: 800; color: var(--ink-soft);
+text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px;
+}
+.settings-levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.level-btn {
+background: var(--surface); border: 3px solid transparent; border-radius: 14px;
+padding: 12px 6px; color: var(--ink); min-height: 90px;
+display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+transition: border-color 0.15s, background 0.15s;
+}
+.level-btn .level-stars { font-size: 16px; }
+.level-btn .level-name  { font-size: 14px; font-weight: 800; }
+.level-btn .level-desc  { font-size: 11px; font-weight: 600; color: var(--ink-soft); text-align: center; }
+.level-btn.active { border-color: var(--c-blue); background: #EBF4FF; }
+.level-btn.active .level-desc { color: var(--c-blue); }
+.settings-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.settings-row-title { font-size: 15px; font-weight: 800; }
+.settings-row-hint  { font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+.toggle-btn {
+background: #E5E5EA; color: var(--ink);
+padding: 10px 16px; border-radius: 20px;
+font-size: 15px; font-weight: 800; min-width: 64px; flex-shrink: 0;
+transition: background 0.2s, color 0.2s;
+}
+.toggle-btn.on { background: var(--c-green); color: #FFFFFF; }
 
 @media (min-width: 500px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
 </style>
-
 </head>
 <body>
 
@@ -127,7 +186,11 @@ gap: 8px; transition: transform 0.1s; color: var(--ink);
     <span class="t1">A</span><span class="t2">u</span><span class="t3">s</span><span class="t4">o</span><span class="t5">m</span><span class="t6">e</span>
     <span class="t4">W</span><span class="t5">o</span><span class="t6">r</span><span class="t1">d</span><span class="t2">s</span>
   </span>
-  <button class="restart-btn" id="restartBtn">↻ Restart</button>
+  <div class="header-actions">
+    <span class="level-badge" id="levelBadge">★ L1</span>
+    <button class="settings-btn" id="settingsBtn" aria-label="Settings">⚙</button>
+    <button class="restart-btn" id="restartBtn" aria-label="Restart">↻</button>
+  </div>
 </div>
 
 <div class="sentence-bar">
@@ -141,6 +204,7 @@ gap: 8px; transition: transform 0.1s; color: var(--ink);
 
 <div class="content">
   <div class="breadcrumb" id="talkBreadcrumb"></div>
+  <div id="talkSuggestion"></div>
   <div class="grid" id="talkGrid"></div>
 </div>
 
@@ -164,13 +228,13 @@ function speak(text, opts = {}) {
   synth.cancel();
   const u = new SpeechSynthesisUtterance(text);
   if (englishVoice) u.voice = englishVoice;
-  u.rate = opts.rate || 0.9;
+  u.rate  = opts.rate  || 0.9;
   u.pitch = opts.pitch || 1.1;
   u.volume = 1;
   synth.speak(u);
 }
 
-// ========= AUDIO (for celebration chime) =========
+// ========= AUDIO =========
 let audioCtx = null;
 function getAudioCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -178,9 +242,9 @@ function getAudioCtx() {
 }
 function playTone(freq, duration = 0.4, type = "sine", volume = 0.3) {
   try {
-    const ctx = getAudioCtx();
+    const ctx  = getAudioCtx();
     if (ctx.state === "suspended") ctx.resume();
-    const osc = ctx.createOscillator();
+    const osc  = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = type;
     osc.frequency.value = freq;
@@ -201,87 +265,103 @@ function playHappyChime() {
 // ========= VOCABULARY =========
 const STARTERS = [
   { word: "I want", emoji: "🙋", next: "categories" },
-  { word: "I feel", emoji: "💭", next: "feelings" },
-  { word: "I need", emoji: "🆘", next: "needs" },
-  { word: "I see",  emoji: "👀", next: "categories" }
+  { word: "I need", emoji: "🆘", next: "needs"      },
+  { word: "Say",    emoji: "💬", next: "social"     },
 ];
 const CATEGORIES = [
-  { word: "Food", emoji: "🍎", items: "food", color: "c-red" },
-  { word: "Drinks", emoji: "🥤", items: "drinks", color: "c-blue" },
-  { word: "Toys", emoji: "🧸", items: "toys", color: "c-orange" },
-  { word: "Activities", emoji: "🏃", items: "activities", color: "c-green" },
-  { word: "People", emoji: "👨‍👩‍👦", items: "people", color: "c-purple" },
-  { word: "Places", emoji: "📍", items: "places", color: "c-yellow" }
+  { word: "Food",       emoji: "🍔", items: "food",       color: "c-red"    },
+  { word: "Drinks",     emoji: "💧", items: "drinks",     color: "c-blue"   },
+  { word: "Activities", emoji: "🏃", items: "activities", color: "c-green"  },
+  { word: "Colors",     emoji: "🌈", items: "colors",     color: "c-yellow" },
 ];
 const ITEMS = {
   food: [
-    { word: "apple", emoji: "🍎", color: "c-red" },
-    { word: "banana", emoji: "🍌", color: "c-yellow" },
-    { word: "rice", emoji: "🍚", color: "c-green" },
-    { word: "bread", emoji: "🍞", color: "c-orange" },
-    { word: "chicken", emoji: "🍗", color: "c-orange" },
-    { word: "egg", emoji: "🥚", color: "c-yellow" },
-    { word: "cookie", emoji: "🍪", color: "c-orange" },
-    { word: "ice cream", emoji: "🍦", color: "c-pink" }
+    { word: "burger",           emoji: "🍔", color: "c-red"    },
+    { word: "chicken and rice", emoji: "🍗", color: "c-orange" },
+    { word: "cupcakes",         emoji: "🧁", color: "c-pink"   },
+    { word: "food",             emoji: "🍽️", color: "c-green"  },
   ],
   drinks: [
     { word: "water", emoji: "💧", color: "c-blue" },
-    { word: "milk", emoji: "🥛", color: "c-blue" },
-    { word: "juice", emoji: "🧃", color: "c-orange" },
-    { word: "soda", emoji: "🥤", color: "c-red" }
-  ],
-  toys: [
-    { word: "car", emoji: "🚗", color: "c-red" },
-    { word: "ball", emoji: "⚽", color: "c-green" },
-    { word: "blocks", emoji: "🧱", color: "c-orange" },
-    { word: "tablet", emoji: "📱", color: "c-blue" }
+    { word: "bubu",  emoji: "🍼", color: "c-blue" },
   ],
   activities: [
-    { word: "play", emoji: "🎮", color: "c-purple" },
-    { word: "watch", emoji: "📺", color: "c-blue" },
-    { word: "eat", emoji: "🍽️", color: "c-yellow" },
-    { word: "sleep", emoji: "😴", color: "c-purple" },
-    { word: "bath", emoji: "🛁", color: "c-blue" },
-    { word: "outside", emoji: "🌳", color: "c-green" },
-    { word: "music", emoji: "🎵", color: "c-pink" },
-    { word: "sing", emoji: "🎤", color: "c-purple" }
+    { word: "run",           emoji: "🏃",  color: "c-orange" },
+    { word: "jump",          emoji: "🐸",  color: "c-green"  },
+    { word: "slides",        emoji: "🛝",  color: "c-yellow" },
+    { word: "tickle time",   emoji: "😄",  color: "c-pink"   },
+    { word: "hide and seek", emoji: "🙈",  color: "c-purple" },
   ],
-  people: [
-    { word: "mama", emoji: "👩", color: "c-pink" },
-    { word: "papa", emoji: "👨", color: "c-blue" },
-    { word: "lola", emoji: "👵", color: "c-purple" },
-    { word: "lolo", emoji: "👴", color: "c-green" }
+  colors: [
+    { word: "red car",       emoji: "🚗", color: "c-red"    },
+    { word: "blue ball",     emoji: "🔵", color: "c-blue"   },
+    { word: "yellow sun",    emoji: "☀️", color: "c-yellow" },
+    { word: "green tree",    emoji: "🌳", color: "c-green"  },
+    { word: "orange ball",   emoji: "🟠", color: "c-orange" },
+    { word: "purple flower", emoji: "💜", color: "c-purple" },
   ],
-  places: [
-    { word: "bedroom", emoji: "🛏️", color: "c-purple" },
-    { word: "kitchen", emoji: "🍳", color: "c-orange" },
-    { word: "park", emoji: "🏞️", color: "c-green" },
-    { word: "car", emoji: "🚙", color: "c-red" }
-  ],
-  feelings: [
-    { word: "happy", emoji: "😊", color: "c-yellow" },
-    { word: "sad", emoji: "😢", color: "c-blue" },
-    { word: "tired", emoji: "😴", color: "c-purple" },
-    { word: "hungry", emoji: "🍴", color: "c-orange" },
-    { word: "thirsty", emoji: "💧", color: "c-blue" }
+  social: [
+    { word: "yes",    emoji: "✅", color: "c-green"  },
+    { word: "no",     emoji: "❌", color: "c-red"    },
+    { word: "please", emoji: "🙏", color: "c-blue"   },
+    { word: "borrow", emoji: "🤝", color: "c-orange" },
   ],
   needs: [
-    { word: "bathroom", emoji: "🚽", color: "c-blue" },
-    { word: "help", emoji: "🙏", color: "c-pink" },
-    { word: "more", emoji: "➕", color: "c-green" },
-    { word: "finished", emoji: "✅", color: "c-green" }
-  ]
+    { word: "bathroom", emoji: "🚽", color: "c-blue"  },
+    { word: "help",     emoji: "🙏", color: "c-pink"  },
+    { word: "more",     emoji: "➕", color: "c-green" },
+    { word: "finished", emoji: "✅", color: "c-green" },
+  ],
 };
 const POLITE = { word: "please", emoji: "🙏" };
 
+// ========= PARENT SETTINGS =========
+let correctionMode = false;
+let currentLevel   = 1;
+
 // ========= STATE =========
-let sentence = [];
+let sentence        = [];
 let currentCategory = null;
 const sentenceDisplay = document.getElementById("sentenceDisplay");
-const talkGrid = document.getElementById("talkGrid");
-const talkBreadcrumb = document.getElementById("talkBreadcrumb");
-const speakBtn = document.getElementById("speakBtn");
+const talkGrid        = document.getElementById("talkGrid");
+const talkBreadcrumb  = document.getElementById("talkBreadcrumb");
+const talkSuggestion  = document.getElementById("talkSuggestion");
+const speakBtn        = document.getElementById("speakBtn");
 
+// ========= CORRECTION ENGINE =========
+const NO_ARTICLE  = new Set(["food","water","bubu","help","more","finished",
+                              "bathroom","yes","no","please","borrow",
+                              "run","jump","slides","hide and seek","tickle time"]);
+const THE_ARTICLE = new Set(["bathroom"]);
+const COLOR_WORDS = new Set(["red","blue","yellow","green","orange","purple","pink"]);
+
+function getSuggestion(words) {
+  try {
+    if (!words.length) return null;
+    const result = [...words];
+
+    if (result.length >= 2 && (result[0] === "I want" || result[0] === "I need")) {
+      const noun  = result[1];
+      const lower = noun.toLowerCase();
+      if (THE_ARTICLE.has(lower)) {
+        result.splice(1, 0, "the");
+      } else if (!NO_ARTICLE.has(lower) && !noun.endsWith("s")) {
+        const firstWord = noun.split(" ")[0].toLowerCase();
+        const article   = COLOR_WORDS.has(firstWord) ? "a" : (/^[aeiou]/i.test(noun) ? "an" : "a");
+        result.splice(1, 0, article);
+      }
+    }
+
+    if (result[result.length - 1] !== "please") result.push("please");
+
+    const suggestion = result.join(" ");
+    return suggestion !== words.join(" ") ? suggestion : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+// ========= SENTENCE =========
 function renderSentence() {
   sentenceDisplay.innerHTML = "";
   if (sentence.length === 0) { sentenceDisplay.classList.add("empty"); speakBtn.disabled = true; return; }
@@ -294,10 +374,10 @@ function renderSentence() {
     sentenceDisplay.appendChild(s);
   });
 }
-function addWord(word) { sentence.push(word); renderSentence(); speak(word, { rate: 0.9 }); }
+function addWord(word)    { sentence.push(word); renderSentence(); speak(word, { rate: 0.9 }); }
 function removeLastWord() { sentence.pop(); renderSentence(); }
-function clearSentence() { sentence = []; renderSentence(); }
-function speakSentence() { if (!sentence.length) return; speak(sentence.join(" "), { rate: 0.85 }); }
+function clearSentence()  { sentence = []; talkSuggestion.innerHTML = ""; renderSentence(); }
+function speakSentence()  { if (!sentence.length) return; speak(sentence.join(" "), { rate: 0.85 }); }
 
 function createCard(label, emoji, color, isStarter) {
   const btn = document.createElement("button");
@@ -313,63 +393,100 @@ function createBackButton(onClick) {
   return btn;
 }
 
+// ========= SCREENS =========
 function renderHome() {
   talkBreadcrumb.innerHTML = `<span class="screen-title">What do you want to say?</span>`;
   talkGrid.innerHTML = "";
+  talkSuggestion.innerHTML = "";
   STARTERS.forEach(s => {
     const c = createCard(s.word, s.emoji, null, true);
     c.addEventListener("click", () => {
-      addWord(s.word);
-      if (s.next === "categories") renderCategories();
-      else if (s.next === "feelings") renderItems("feelings", "Feelings");
-      else if (s.next === "needs") renderItems("needs", "Needs");
+      if (s.next === "social") {
+        renderItems("social", "Social");
+      } else {
+        addWord(s.word);
+        if (s.next === "categories") renderCategories();
+        else if (s.next === "needs") renderItems("needs", "Needs");
+      }
     });
     talkGrid.appendChild(c);
   });
 }
+
 function renderCategories() {
   talkBreadcrumb.innerHTML = "";
-  talkBreadcrumb.appendChild(createBackButton(() => { renderHome(); removeLastWord(); }));
+  talkBreadcrumb.appendChild(createBackButton(() => { removeLastWord(); renderHome(); }));
   const t = document.createElement("span");
   t.className = "screen-title";
   t.textContent = "Pick a category";
   talkBreadcrumb.appendChild(t);
   talkGrid.innerHTML = "";
+  talkSuggestion.innerHTML = "";
   CATEGORIES.forEach(c => {
     const card = createCard(c.word, c.emoji, c.color, false);
     card.addEventListener("click", () => renderItems(c.items, c.word));
     talkGrid.appendChild(card);
   });
 }
+
 function renderItems(key, label) {
+  const isSocial = key === "social";
+  const isNeeds  = key === "needs";
   currentCategory = key;
   talkBreadcrumb.innerHTML = "";
   talkBreadcrumb.appendChild(createBackButton(() => {
-    if (key === "feelings" || key === "needs") { removeLastWord(); renderHome(); }
-    else { renderCategories(); }
+    if (isSocial)   { renderHome(); }
+    else if (isNeeds) { removeLastWord(); renderHome(); }
+    else              { renderCategories(); }
   }));
   const t = document.createElement("span");
   t.className = "screen-title";
   t.textContent = label;
   talkBreadcrumb.appendChild(t);
   talkGrid.innerHTML = "";
+  talkSuggestion.innerHTML = "";
+
   (ITEMS[key] || []).forEach(it => {
     const card = createCard(it.word, it.emoji, it.color, false);
-    card.addEventListener("click", () => { addWord(it.word); renderFinish(); });
+    card.addEventListener("click", () => {
+      if (isSocial) {
+        speak(it.word, { rate: 0.9 });
+        playHappyChime();
+        setTimeout(() => renderHome(), 1500);
+      } else {
+        addWord(it.word);
+        renderFinish();
+      }
+    });
     talkGrid.appendChild(card);
   });
 }
+
 function renderFinish() {
   talkBreadcrumb.innerHTML = "";
   talkBreadcrumb.appendChild(createBackButton(() => {
     removeLastWord();
-    renderItems(currentCategory, currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1));
+    if (currentCategory) {
+      const cat = CATEGORIES.find(c => c.items === currentCategory);
+      renderItems(currentCategory, cat ? cat.word : currentCategory);
+    } else {
+      renderHome();
+    }
   }));
   const t = document.createElement("span");
   t.className = "screen-title";
   t.textContent = "Add 'please' or speak now!";
   talkBreadcrumb.appendChild(t);
   talkGrid.innerHTML = "";
+
+  if (correctionMode) {
+    const suggestion = getSuggestion(sentence);
+    talkSuggestion.innerHTML = suggestion
+      ? `<div class="suggestion-banner"><span class="suggestion-label">Try saying:</span> <em>${suggestion}</em></div>`
+      : "";
+  } else {
+    talkSuggestion.innerHTML = "";
+  }
 
   const pleaseCard = createCard(POLITE.word, POLITE.emoji, null, true);
   pleaseCard.addEventListener("click", () => {
@@ -391,14 +508,88 @@ function renderFinish() {
   talkGrid.appendChild(restartCard);
 }
 
+// ========= SETTINGS =========
+function updateLevelBadge() {
+  const badge = document.getElementById("levelBadge");
+  if (badge) badge.textContent = "★".repeat(currentLevel) + " L" + currentLevel;
+}
+
+function renderSettings() {
+  if (document.querySelector(".settings-overlay")) return;
+  const overlay = document.createElement("div");
+  overlay.className = "settings-overlay";
+  overlay.innerHTML = `
+    <div class="settings-panel">
+      <div class="settings-header">
+        <span class="settings-title">⚙ Settings</span>
+        <button class="settings-close" id="settingsClose">✕</button>
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-label">Level</div>
+        <div class="settings-levels">
+          <button class="level-btn ${currentLevel === 1 ? "active" : ""}" data-level="1">
+            <span class="level-stars">⭐</span>
+            <span class="level-name">Level 1</span>
+            <span class="level-desc">Match what he says</span>
+          </button>
+          <button class="level-btn ${currentLevel === 2 ? "active" : ""}" data-level="2">
+            <span class="level-stars">⭐⭐</span>
+            <span class="level-name">Level 2</span>
+            <span class="level-desc">Add missing words</span>
+          </button>
+          <button class="level-btn ${currentLevel === 3 ? "active" : ""}" data-level="3">
+            <span class="level-stars">⭐⭐⭐</span>
+            <span class="level-name">Level 3</span>
+            <span class="level-desc">Color phrases</span>
+          </button>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-label">Gentle Correction</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-title">Show "Try saying:" suggestion</div>
+            <div class="settings-row-hint">Appears after each sentence is built. Off by default.</div>
+          </div>
+          <button class="toggle-btn ${correctionMode ? "on" : ""}" id="correctionToggle">
+            ${correctionMode ? "ON" : "OFF"}
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.querySelector("#settingsClose").addEventListener("click", () => document.body.removeChild(overlay));
+
+  overlay.querySelectorAll(".level-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      currentLevel = parseInt(btn.dataset.level, 10);
+      overlay.querySelectorAll(".level-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      updateLevelBadge();
+    });
+  });
+
+  overlay.querySelector("#correctionToggle").addEventListener("click", function () {
+    correctionMode = !correctionMode;
+    this.textContent = correctionMode ? "ON" : "OFF";
+    this.classList.toggle("on", correctionMode);
+  });
+
+  overlay.addEventListener("click", e => { if (e.target === overlay) document.body.removeChild(overlay); });
+}
+
+// ========= CONTROLS =========
 document.getElementById("speakBtn").addEventListener("click", speakSentence);
 document.getElementById("undoBtn").addEventListener("click", removeLastWord);
 document.getElementById("clearBtn").addEventListener("click", () => { clearSentence(); renderHome(); });
 document.getElementById("restartBtn").addEventListener("click", () => { clearSentence(); renderHome(); });
+document.getElementById("settingsBtn").addEventListener("click", renderSettings);
 
 // Prime audio + speech on first touch (iOS requirement)
 document.addEventListener("touchstart", function prime() {
-  try { getAudioCtx().resume(); } catch(e) {}
+  try { getAudioCtx().resume(); } catch (e) {}
   const u = new SpeechSynthesisUtterance("");
   synth.speak(u);
   document.removeEventListener("touchstart", prime);
