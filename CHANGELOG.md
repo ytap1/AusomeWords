@@ -10,13 +10,23 @@ Categories: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**, **Se
 ## [Unreleased]
 
 ### Added
-- (nothing yet)
+- Vocabulary updated to match the child's known words: burger, chicken and rice,
+  cupcakes, food, water, bubu, run, jump, slides, tickle time, hide and seek.
+- "Say" starter for social words (yes, no, please, borrow) — speaks immediately
+  on tap, no sentence-builder overhead.
+- Colors category: red car, blue ball, yellow sun, green tree, orange ball, purple flower.
+- Gentle correction mode (parent toggle, off by default): shows a soft
+  "Try saying: …" banner after each sentence with article and "please" suggestions.
+- Level indicator (★ L1 / ★★ L2 / ★★★ L3) badge in header.
+- Settings bottom sheet (⚙): parent controls level and correction toggle.
 
 ### Changed
-- (nothing yet)
+- Starters reduced to "I want" and "I need" (plus new "Say"); removed "I feel" / "I see".
+- Restart button condensed to icon-only (↻) to make room for level badge + settings.
 
 ### Fixed
-- (nothing yet)
+- CSS `var()` calls used en-dashes instead of `--`; all colours now resolve.
+- `index.html` renamed from `Index.html` so GitHub Pages serves the file correctly.
 
 ## [0.1.0] — 2026-04-23
 
