@@ -335,7 +335,7 @@ const NO_ARTICLE  = new Set(["food","water","bubu","help","more","finished",
 const THE_ARTICLE = new Set(["bathroom"]);
 const COLOR_WORDS = new Set(["red","blue","yellow","green","orange","purple","pink"]);
 
-function getSuggestion(words) {
+function localSuggestion(words) {
   try {
     if (!words.length) return null;
     const result = [...words];
@@ -358,6 +358,25 @@ function getSuggestion(words) {
     return suggestion !== words.join(" ") ? suggestion : null;
   } catch (_) {
     return null;
+  }
+}
+
+async function fetchSuggestion(words) {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    const res = await fetch("/.netlify/functions/suggest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ words }),
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    if (!res.ok) return localSuggestion(words);
+    const { suggestion } = await res.json();
+    return suggestion || localSuggestion(words);
+  } catch (_) {
+    return localSuggestion(words);
   }
 }
 
@@ -479,13 +498,13 @@ function renderFinish() {
   talkBreadcrumb.appendChild(t);
   talkGrid.innerHTML = "";
 
+  talkSuggestion.innerHTML = "";
   if (correctionMode) {
-    const suggestion = getSuggestion(sentence);
-    talkSuggestion.innerHTML = suggestion
-      ? `<div class="suggestion-banner"><span class="suggestion-label">Try saying:</span> <em>${suggestion}</em></div>`
-      : "";
-  } else {
-    talkSuggestion.innerHTML = "";
+    fetchSuggestion(sentence).then(suggestion => {
+      if (suggestion) {
+        talkSuggestion.innerHTML = `<div class="suggestion-banner"><span class="suggestion-label">Try saying:</span> <em>${suggestion}</em></div>`;
+      }
+    });
   }
 
   const pleaseCard = createCard(POLITE.word, POLITE.emoji, null, true);
