@@ -67,3 +67,73 @@ rollback.
   runs CI checks; `git revert` is the rollback path.
 - **Follow-ups:** if a class of bug starts shipping to `main`, add a CI
   check that would have caught it.
+
+---
+
+## ADR-0002: Move deploy target from GitHub Pages to Netlify
+
+- **Date:** 2026-04-27
+- **Status:** Accepted
+
+### Context
+
+GitHub Pages serves static files only. Adding a server-side Gemini API
+proxy requires a compute layer. Netlify Functions provide this with zero
+infrastructure overhead and the same "push to deploy" workflow.
+
+### Decision
+
+Switch deploy target to Netlify. Keep the single-file `index.html`
+architecture unchanged. Add `netlify.toml` (publish dir = `.`) and a
+`netlify/functions/` directory for serverless functions.
+
+### Alternatives Considered
+
+- **GitHub Pages + client-side key:** API key exposed in public HTML. Rejected.
+- **Cloudflare Workers:** viable, but Netlify Functions share the same Node.js
+  runtime as the rest of the project and have a simpler free tier.
+- **Streamlit:** Python rewrite with server-round-trip-per-tap latency.
+  Rejected — UX regression for a tap-heavy AAC app.
+
+### Consequences
+
+- **Positive:** API key stays server-side; same push-to-deploy workflow;
+  no build step added; free tier (125k function invocations/month) is ample.
+- **Negative:** new deploy dependency; requires one-time Netlify dashboard
+  setup (connect repo, add `GEMINI_API_KEY` env var).
+- **Follow-ups:** update `context.md`; disable GitHub Pages in repo settings.
+
+---
+
+## ADR-0003: Add Gemini 2.0 Flash for sentence suggestions
+
+- **Date:** 2026-04-27
+- **Status:** Accepted
+
+### Context
+
+The rule-based `getSuggestion()` function handles only the hardcoded
+vocabulary and breaks on any word it hasn't anticipated. A cloud LLM
+generalises to any vocabulary expansion without rule maintenance.
+
+### Decision
+
+Proxy calls to Gemini 2.0 Flash via `netlify/functions/suggest.js`.
+The existing rule-based function is renamed `localSuggestion()` and
+used as a fallback if the network call fails or times out (5 s).
+
+### Alternatives Considered
+
+- **Gemma 4 on-device:** blocked by absent WebGPU on iOS Safari. Rejected.
+- **Client-side Gemini API key:** key exposed in public HTML. Rejected.
+- **GPT-4o / Claude:** higher latency and cost for a task Gemini Flash
+  handles well. Rejected.
+
+### Consequences
+
+- **Positive:** natural, context-aware suggestions; graceful degradation
+  to local rules on failure; API key never in source code.
+- **Negative:** suggestion banner appears ~300 ms after cards render
+  (acceptable — doesn't block interaction); requires `GEMINI_API_KEY`
+  env var set in Netlify dashboard.
+- **Follow-ups:** monitor free tier usage once real users arrive.

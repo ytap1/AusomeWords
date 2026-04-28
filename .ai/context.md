@@ -27,7 +27,9 @@ AusomeWords is an AAC (Augmentative and Alternative Communication) app for autis
 - **Speech:** Web Speech API (`speechSynthesis`)
 - **Audio:** Web Audio API (`AudioContext`) for celebration chimes
 - **Storage:** none (stateless between sessions)
-- **Deploy:** GitHub Pages (auto on push to `main`)
+- **Deploy:** Netlify (auto on push to `main`; see ADR-0002)
+- **Functions:** Netlify Functions (`netlify/functions/suggest.js`) — Gemini proxy
+- **AI:** Gemini 2.0 Flash via `GEMINI_API_KEY` env var (see ADR-0003)
 - **Target runtime:** Safari on iPad/iPhone
 
 ## Working Model
