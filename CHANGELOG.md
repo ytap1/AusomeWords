@@ -38,6 +38,11 @@ Categories: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**, **Se
 - Cards announce via `aria-label` with the word; emoji span is
   `aria-hidden="true"` so VoiceOver reads "burger" instead of "hamburger
   emoji burger".
+- Switch-scanning mode (parent toggle in settings, off by default):
+  auto-cycles a focus highlight through visible buttons every 1.5 s;
+  any non-modifier keypress selects the highlighted button. Audio prime
+  also fires on keydown so switch users get speech without first
+  touching the screen.
 - ADR-0002 (Netlify deploy target), ADR-0003 (Gemini 2.0 Flash),
   ADR-0004 (working model — device constraint relaxed).
 - `docs/gemma4-integration.md` — historical analysis, superseded by ADR-0003.
