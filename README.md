@@ -22,14 +22,15 @@ See [docs/workflow.md](./docs/workflow.md) for the full working model.
 ## What Works
 
 - Sentence builder: I want / I need / Say → categories → items → speak.
-- Vocabulary matched to the child's known words (burger, chicken and rice, cupcakes, run, jump, slides, tickle time, hide and seek, bubu, yes/no/please/borrow).
-- Social words ("Say" starter) speak immediately on tap.
-- Colors category with colored-object cards (red car, blue ball, yellow sun, etc.).
-- Gentle correction mode — parent toggle (off by default) showing "Try saying: …" with article + "please" suggestions.
-- Level indicator (★ L1 / L2 / L3) and settings bottom sheet, parent-controlled.
-- Web Speech API sentence builder with word-by-word audio preview.
+- Vocabulary in [`data/vocabulary.json`](./data/vocabulary.json) (carer-editable), with embedded fallback. Currently includes burger, chicken and rice, cupcakes, water, bubu, run, jump, slides, tickle time, hide and seek, plus colors and needs.
+- Speech is grammatically assembled at speak time via POS-tagged items (e.g. "I want a burger, please.", "I want to run, please.", "I want an orange ball, please.", "I'm finished.").
+- Social words ("Say" starter) speak immediately on tap; `borrow` speaks as "Can I borrow that?".
+- Colors category with colored-object cards; vowel-sound colors get "an" automatically.
+- AI-backed correction (Gemini 2.0 Flash via Netlify Function) with local POS-rule fallback on any failure. Carer toggle for the visible "Try saying: …" banner.
+- Three levels in settings: L1 silent, L2 baseline grammar, L3 Gemini-enriched. Settings persist across reloads.
 - Web Audio API celebration chime on sentence completion.
-- iOS/Safari optimised layout (safe-area insets, 44 pt touch targets).
+- ARIA labels on cards (VoiceOver reads the word, not the emoji glyph).
+- Mobile-friendly layout (safe-area insets, 44 pt touch targets) — works in any modern browser.
 - AI-first docs in [`.ai/`](./.ai/).
 
 ## What's Next
