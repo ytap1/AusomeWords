@@ -455,7 +455,7 @@ function renderSentence() {
     sentenceDisplay.appendChild(s);
   });
 }
-function addWord(word)    { sentence.push(word); renderSentence(); speak(word, { rate: 0.9 }); }
+function addWord(word, skipPreview) { sentence.push(word); renderSentence(); if (!skipPreview) speak(word, { rate: 0.9 }); }
 function removeLastWord() { sentence.pop(); renderSentence(); }
 function clearSentence()  { sentence = []; talkSuggestion.innerHTML = ""; renderSentence(); }
 function speakSentence()  { if (!sentence.length) return; speak(assembleSpoken(sentence), { rate: 0.85 }); }
@@ -463,7 +463,8 @@ function speakSentence()  { if (!sentence.length) return; speak(assembleSpoken(s
 function createCard(label, emoji, color, isStarter) {
   const btn = document.createElement("button");
   btn.className = "card" + (isStarter ? " starter-card" : " " + (color || ""));
-  btn.innerHTML = `<span class="card-emoji">${emoji}</span><span class="card-label">${label}</span>`;
+  btn.setAttribute("aria-label", label);
+  btn.innerHTML = `<span class="card-emoji" aria-hidden="true">${emoji}</span><span class="card-label">${label}</span>`;
   return btn;
 }
 function createBackButton(onClick) {
@@ -563,16 +564,26 @@ function renderFinish() {
   talkSuggestion.innerHTML = "";
   if (correctionMode && currentLevel >= 2) {
     fetchSuggestion(sentence, currentLevel).then(suggestion => {
-      if (suggestion) {
-        talkSuggestion.innerHTML = `<div class="suggestion-banner"><span class="suggestion-label">Try saying:</span> <em>${suggestion}</em></div>`;
-      }
+      if (!suggestion) return;
+      const banner = document.createElement("div");
+      banner.className = "suggestion-banner";
+      const label = document.createElement("span");
+      label.className = "suggestion-label";
+      label.textContent = "Try saying:";
+      const em = document.createElement("em");
+      em.textContent = suggestion;
+      banner.appendChild(label);
+      banner.appendChild(document.createTextNode(" "));
+      banner.appendChild(em);
+      talkSuggestion.innerHTML = "";
+      talkSuggestion.appendChild(banner);
     });
   }
 
   const pleaseCard = createCard(POLITE.word, POLITE.emoji, null, true);
   pleaseCard.addEventListener("click", () => {
-    addWord(POLITE.word);
-    setTimeout(() => speakSentence(), 400);
+    addWord(POLITE.word, true);
+    setTimeout(() => speakSentence(), 200);
     setTimeout(() => { clearSentence(); renderHome(); playHappyChime(); }, 2500);
   });
   talkGrid.appendChild(pleaseCard);
