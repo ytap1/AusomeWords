@@ -263,57 +263,82 @@ function playHappyChime() {
 }
 
 // ========= VOCABULARY =========
-const STARTERS = [
-  { word: "I want", emoji: "🙋", next: "categories" },
-  { word: "I need", emoji: "🆘", next: "needs"      },
-  { word: "Say",    emoji: "💬", next: "social"     },
-];
-const CATEGORIES = [
-  { word: "Food",       emoji: "🍔", items: "food",       color: "c-red"    },
-  { word: "Drinks",     emoji: "💧", items: "drinks",     color: "c-blue"   },
-  { word: "Activities", emoji: "🏃", items: "activities", color: "c-green"  },
-  { word: "Colors",     emoji: "🌈", items: "colors",     color: "c-yellow" },
-];
-const ITEMS = {
-  food: [
-    { word: "burger",           emoji: "🍔", color: "c-red"    },
-    { word: "chicken and rice", emoji: "🍗", color: "c-orange" },
-    { word: "cupcakes",         emoji: "🧁", color: "c-pink"   },
-    { word: "food",             emoji: "🍽️", color: "c-green"  },
+// Source of truth: data/vocabulary.json (fetched at startup).
+// DEFAULT_VOCAB below is the embedded fallback used only if the fetch fails.
+// Keep it in sync with the JSON file.
+const DEFAULT_VOCAB = {
+  starters: [
+    { word: "I want", emoji: "🙋", next: "categories" },
+    { word: "I need", emoji: "🆘", next: "needs"      },
+    { word: "Say",    emoji: "💬", next: "social"     },
   ],
-  drinks: [
-    { word: "water", emoji: "💧", color: "c-blue" },
-    { word: "bubu",  emoji: "🍼", color: "c-blue" },
+  categories: [
+    { word: "Food",       emoji: "🍔", items: "food",       color: "c-red"    },
+    { word: "Drinks",     emoji: "💧", items: "drinks",     color: "c-blue"   },
+    { word: "Activities", emoji: "🏃", items: "activities", color: "c-green"  },
+    { word: "Colors",     emoji: "🌈", items: "colors",     color: "c-yellow" },
   ],
-  activities: [
-    { word: "run",           emoji: "🏃",  color: "c-orange" },
-    { word: "jump",          emoji: "🐸",  color: "c-green"  },
-    { word: "slides",        emoji: "🛝",  color: "c-yellow" },
-    { word: "tickle time",   emoji: "😄",  color: "c-pink"   },
-    { word: "hide and seek", emoji: "🙈",  color: "c-purple" },
-  ],
-  colors: [
-    { word: "red car",       emoji: "🚗", color: "c-red"    },
-    { word: "blue ball",     emoji: "🔵", color: "c-blue"   },
-    { word: "yellow sun",    emoji: "☀️", color: "c-yellow" },
-    { word: "green tree",    emoji: "🌳", color: "c-green"  },
-    { word: "orange ball",   emoji: "🟠", color: "c-orange" },
-    { word: "purple flower", emoji: "💜", color: "c-purple" },
-  ],
-  social: [
-    { word: "yes",    emoji: "✅", color: "c-green"  },
-    { word: "no",     emoji: "❌", color: "c-red"    },
-    { word: "please", emoji: "🙏", color: "c-blue"   },
-    { word: "borrow", emoji: "🤝", color: "c-orange" },
-  ],
-  needs: [
-    { word: "bathroom", emoji: "🚽", color: "c-blue"  },
-    { word: "help",     emoji: "🙏", color: "c-pink"  },
-    { word: "more",     emoji: "➕", color: "c-green" },
-    { word: "finished", emoji: "✅", color: "c-green" },
-  ],
+  items: {
+    food: [
+      { word: "burger",           emoji: "🍔", color: "c-red"    },
+      { word: "chicken and rice", emoji: "🍗", color: "c-orange" },
+      { word: "cupcakes",         emoji: "🧁", color: "c-pink"   },
+      { word: "food",             emoji: "🍽️", color: "c-green"  },
+    ],
+    drinks: [
+      { word: "water", emoji: "💧", color: "c-blue" },
+      { word: "bubu",  emoji: "🍼", color: "c-blue" },
+    ],
+    activities: [
+      { word: "run",           emoji: "🏃",  color: "c-orange" },
+      { word: "jump",          emoji: "🐸",  color: "c-green"  },
+      { word: "slides",        emoji: "🛝",  color: "c-yellow" },
+      { word: "tickle time",   emoji: "😄",  color: "c-pink"   },
+      { word: "hide and seek", emoji: "🙈",  color: "c-purple" },
+    ],
+    colors: [
+      { word: "red car",       emoji: "🚗", color: "c-red"    },
+      { word: "blue ball",     emoji: "🔵", color: "c-blue"   },
+      { word: "yellow sun",    emoji: "☀️", color: "c-yellow" },
+      { word: "green tree",    emoji: "🌳", color: "c-green"  },
+      { word: "orange ball",   emoji: "🟠", color: "c-orange" },
+      { word: "purple flower", emoji: "💜", color: "c-purple" },
+    ],
+    social: [
+      { word: "yes",    emoji: "✅", color: "c-green"  },
+      { word: "no",     emoji: "❌", color: "c-red"    },
+      { word: "please", emoji: "🙏", color: "c-blue"   },
+      { word: "borrow", emoji: "🤝", color: "c-orange" },
+    ],
+    needs: [
+      { word: "bathroom", emoji: "🚽", color: "c-blue"  },
+      { word: "help",     emoji: "🙏", color: "c-pink"  },
+      { word: "more",     emoji: "➕", color: "c-green" },
+      { word: "finished", emoji: "✅", color: "c-green" },
+    ],
+  },
+  polite: { word: "please", emoji: "🙏" },
 };
-const POLITE = { word: "please", emoji: "🙏" };
+
+let STARTERS   = DEFAULT_VOCAB.starters;
+let CATEGORIES = DEFAULT_VOCAB.categories;
+let ITEMS      = DEFAULT_VOCAB.items;
+let POLITE     = DEFAULT_VOCAB.polite;
+
+async function loadVocabulary() {
+  try {
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), 3000);
+    const res = await fetch("./data/vocabulary.json", { signal: controller.signal });
+    clearTimeout(t);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (Array.isArray(data.starters))   STARTERS   = data.starters;
+    if (Array.isArray(data.categories)) CATEGORIES = data.categories;
+    if (data.items && typeof data.items === "object") ITEMS = data.items;
+    if (data.polite && typeof data.polite === "object") POLITE = data.polite;
+  } catch (_) { /* keep defaults */ }
+}
 
 // ========= PARENT SETTINGS =========
 const SETTINGS_KEY = "ausomeWords.settings.v1";
@@ -629,10 +654,12 @@ document.addEventListener("touchstart", function prime() {
   document.removeEventListener("touchstart", prime);
 }, { once: true });
 
-// Initial render
-updateLevelBadge();
-renderHome();
-renderSentence();
+// Initial render — wait for vocabulary fetch (with 3 s timeout fallback to DEFAULT_VOCAB)
+loadVocabulary().then(() => {
+  updateLevelBadge();
+  renderHome();
+  renderSentence();
+});
 </script>
 
 </body>
