@@ -9,6 +9,10 @@ architecture docs are worse than none.
 AusomeWords/
 ├── CLAUDE.md                 # Claude Code reads this first
 ├── index.html                # entire app — HTML + CSS + JS, single file
+├── netlify.toml              # Netlify build + functions config
+├── netlify/
+│   └── functions/
+│       └── suggest.js        # Gemini 2.0 Flash proxy (see ADR-0003)
 ├── .ai/                      # AI-first context
 │   ├── context.md
 │   ├── conventions.md
@@ -17,7 +21,8 @@ AusomeWords/
 │   └── metrics.md
 ├── docs/
 │   ├── workflow.md           # how work happens (no terminal)
-│   └── architecture.md       # this file
+│   ├── architecture.md       # this file
+│   └── gemma4-integration.md # historical analysis, superseded by ADR-0003
 ├── .gitignore
 ├── CHANGELOG.md
 └── README.md
@@ -45,6 +50,13 @@ Navigation (starters → categories → items → finish)
   → renderHome / renderCategories / renderItems / renderFinish
     → talkGrid + talkBreadcrumb DOM replaced in-place
     → no routing, no history — all state is in sentence[] + currentCategory
+
+Suggestion (finish screen, only if correctionMode && currentLevel >= 2)
+  → fetchSuggestion(sentence, currentLevel)
+    → POST /.netlify/functions/suggest  (5 s timeout, AbortController)
+      → Gemini 2.0 Flash via GEMINI_API_KEY (server-side)
+    → on failure / timeout / non-OK: localSuggestion(sentence) rule fallback
+    → render "Try saying: …" banner above the finish cards
 ```
 
 ## Key Design Principles
@@ -59,27 +71,35 @@ Navigation (starters → categories → items → finish)
 
 ## External Dependencies
 
-None. The app makes no outbound network calls. Browser APIs used:
+Browser APIs used:
 
 | API | Purpose |
 |-----|---------|
 | `speechSynthesis` | Text-to-speech output |
 | `AudioContext` | Celebration chime tones |
+| `localStorage` | Persist parent settings (level + correction toggle) |
 
-Both degrade silently if unavailable — `playTone` has a `try/catch`, and the
-SPEAK button is disabled until a word is added.
+Network calls:
+
+| Call | When | Failure mode |
+|------|------|--------------|
+| `POST /.netlify/functions/suggest` → Gemini 2.0 Flash | Finish screen, only if correction mode is on and level ≥ 2 | 5 s timeout via `AbortController`; falls back to local rule engine (`localSuggestion`) on any non-OK response or timeout |
+
+All three browser APIs degrade silently if unavailable — `playTone` has a
+`try/catch`, the SPEAK button is disabled until a word is added, and the
+settings load is wrapped in `try/catch` (private-mode browsing keeps defaults).
 
 Rules:
 
-- **Every outbound call has a timeout.** No exceptions. (N/A — no outbound calls.)
-- **Degrade gracefully** when a non-critical dep is down. (Both audio APIs wrapped.)
+- **Every outbound call has a timeout.** The Gemini proxy fetch uses a 5 s `AbortController`.
+- **Degrade gracefully** when a non-critical dep is down. Local rule engine takes over for suggestions; audio APIs are wrapped.
 
 ## Verification
 
 The user has no terminal. Verification happens in two places:
 
 - **CI** — whatever checks the project wires up (lint, type-check, tests).
-- **Deploy preview** — the auto-deployed GitHub Pages site after push to `main`.
+- **Deploy preview** — the auto-deployed Netlify site after push to `main`.
 
 Tests that need a localhost don't fit this model. Prefer:
 

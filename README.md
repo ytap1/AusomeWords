@@ -14,7 +14,7 @@
 - Edits via Claude Code (GitHub integration) or the GitHub web editor on Safari.
 - No local dev, no terminal, no package managers — never assume them.
 - Push directly to `main` by default. Branch only for destructive or high-risk changes.
-- Deploy is auto-triggered on push to `main` (GitHub Pages).
+- Deploy is auto-triggered on push to `main` (Netlify; see ADR-0002).
 - Verification happens on the deployed preview, not on a localhost.
 
 See [docs/workflow.md](./docs/workflow.md) for the full working model.
@@ -34,7 +34,7 @@ See [docs/workflow.md](./docs/workflow.md) for the full working model.
 
 ## What's Next
 
-- [ ] Wire up GitHub Pages deploy and verify on device.
+- [ ] Verify Netlify deploy on device (open the live URL in Safari, build a sentence end-to-end).
 - [ ] Level 3 navigation: color + noun phrase flow (starter → color → noun).
 
 ## Documentation

@@ -1,7 +1,7 @@
 # Gemma 4 Integration Analysis
 
-**Date:** 2026-04-27  
-**Status:** Proposed
+**Date:** 2026-04-27
+**Status:** Superseded — see [ADR-0003](../.ai/decisions.md) (adopted Gemini 2.0 Flash via Netlify Function instead of Gemma 4 on-device).
 
 ---
 
@@ -23,7 +23,7 @@ via Transformers.js v3 in browsers that have WebGPU.
 
 ### 1. Richer sentence suggestions (high value)
 
-The current `getSuggestion()` is ~30 lines of hand-coded article-insertion rules.
+The current `localSuggestion()` is ~30 lines of hand-coded article-insertion rules.
 It handles a fixed vocabulary and breaks on any word it hasn't anticipated.
 Gemma 4 E2B could replace it with a single short prompt:
 
