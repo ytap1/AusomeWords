@@ -13,6 +13,9 @@ Thumbs.db
 *.swp
 *.swo
 
+# AI tooling
+.claude/
+
 # Dependencies
 node_modules/
 
