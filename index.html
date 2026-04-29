@@ -316,8 +316,21 @@ const ITEMS = {
 const POLITE = { word: "please", emoji: "🙏" };
 
 // ========= PARENT SETTINGS =========
+const SETTINGS_KEY = "ausomeWords.settings.v1";
 let correctionMode = false;
 let currentLevel   = 1;
+try {
+  const raw = localStorage.getItem(SETTINGS_KEY);
+  if (raw) {
+    const saved = JSON.parse(raw);
+    if (typeof saved.correctionMode === "boolean") correctionMode = saved.correctionMode;
+    if ([1, 2, 3].includes(saved.currentLevel)) currentLevel = saved.currentLevel;
+  }
+} catch (_) {}
+function saveSettings() {
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify({ correctionMode, currentLevel })); }
+  catch (_) {}
+}
 
 // ========= STATE =========
 let sentence        = [];
@@ -361,14 +374,14 @@ function localSuggestion(words) {
   }
 }
 
-async function fetchSuggestion(words) {
+async function fetchSuggestion(words, level) {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
     const res = await fetch("/.netlify/functions/suggest", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ words }),
+      body: JSON.stringify({ words, level }),
       signal: controller.signal
     });
     clearTimeout(timeout);
@@ -499,8 +512,8 @@ function renderFinish() {
   talkGrid.innerHTML = "";
 
   talkSuggestion.innerHTML = "";
-  if (correctionMode) {
-    fetchSuggestion(sentence).then(suggestion => {
+  if (correctionMode && currentLevel >= 2) {
+    fetchSuggestion(sentence, currentLevel).then(suggestion => {
       if (suggestion) {
         talkSuggestion.innerHTML = `<div class="suggestion-banner"><span class="suggestion-label">Try saying:</span> <em>${suggestion}</em></div>`;
       }
@@ -587,6 +600,7 @@ function renderSettings() {
       overlay.querySelectorAll(".level-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       updateLevelBadge();
+      saveSettings();
     });
   });
 
@@ -594,6 +608,7 @@ function renderSettings() {
     correctionMode = !correctionMode;
     this.textContent = correctionMode ? "ON" : "OFF";
     this.classList.toggle("on", correctionMode);
+    saveSettings();
   });
 
   overlay.addEventListener("click", e => { if (e.target === overlay) document.body.removeChild(overlay); });
@@ -615,6 +630,7 @@ document.addEventListener("touchstart", function prime() {
 }, { once: true });
 
 // Initial render
+updateLevelBadge();
 renderHome();
 renderSentence();
 </script>
