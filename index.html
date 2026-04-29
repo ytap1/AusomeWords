@@ -175,6 +175,15 @@ transition: background 0.2s, color 0.2s;
 }
 .toggle-btn.on { background: var(--c-green); color: #FFFFFF; }
 
+.scan-focus {
+  outline: 4px solid var(--c-orange);
+  outline-offset: 4px;
+  transform: scale(1.04);
+  transition: outline-color 0.15s, transform 0.15s;
+  position: relative;
+  z-index: 1;
+}
+
 @media (min-width: 500px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
 </style>
@@ -356,16 +365,18 @@ async function loadVocabulary() {
 const SETTINGS_KEY = "ausomeWords.settings.v1";
 let correctionMode = false;
 let currentLevel   = 1;
+let scanMode       = false;
 try {
   const raw = localStorage.getItem(SETTINGS_KEY);
   if (raw) {
     const saved = JSON.parse(raw);
     if (typeof saved.correctionMode === "boolean") correctionMode = saved.correctionMode;
     if ([1, 2, 3].includes(saved.currentLevel)) currentLevel = saved.currentLevel;
+    if (typeof saved.scanMode === "boolean") scanMode = saved.scanMode;
   }
 } catch (_) {}
 function saveSettings() {
-  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify({ correctionMode, currentLevel })); }
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify({ correctionMode, currentLevel, scanMode })); }
   catch (_) {}
 }
 
@@ -493,6 +504,7 @@ function renderHome() {
     });
     talkGrid.appendChild(c);
   });
+  if (scanMode) startScan();
 }
 
 function renderCategories() {
@@ -509,6 +521,7 @@ function renderCategories() {
     card.addEventListener("click", () => renderItems(c.items, c.word));
     talkGrid.appendChild(card);
   });
+  if (scanMode) startScan();
 }
 
 function renderItems(key, label) {
@@ -542,6 +555,7 @@ function renderItems(key, label) {
     });
     talkGrid.appendChild(card);
   });
+  if (scanMode) startScan();
 }
 
 function renderFinish() {
@@ -598,6 +612,7 @@ function renderFinish() {
   const restartCard = createCard("Start over", "🔄", "c-red", false);
   restartCard.addEventListener("click", () => { clearSentence(); renderHome(); });
   talkGrid.appendChild(restartCard);
+  if (scanMode) startScan();
 }
 
 // ========= SETTINGS =========
@@ -608,6 +623,7 @@ function updateLevelBadge() {
 
 function renderSettings() {
   if (document.querySelector(".settings-overlay")) return;
+  stopScan();
   const overlay = document.createElement("div");
   overlay.className = "settings-overlay";
   overlay.innerHTML = `
@@ -648,11 +664,28 @@ function renderSettings() {
           </button>
         </div>
       </div>
+      <div class="settings-section">
+        <div class="settings-section-label">Switch scanning</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-title">Auto-cycle through cards</div>
+            <div class="settings-row-hint">Press any key (or activate any switch) to select the highlighted card. Off by default.</div>
+          </div>
+          <button class="toggle-btn ${scanMode ? "on" : ""}" id="scanToggle">
+            ${scanMode ? "ON" : "OFF"}
+          </button>
+        </div>
+      </div>
     </div>
   `;
   document.body.appendChild(overlay);
 
-  overlay.querySelector("#settingsClose").addEventListener("click", () => document.body.removeChild(overlay));
+  const close = () => {
+    document.body.removeChild(overlay);
+    if (scanMode) startScan();
+  };
+
+  overlay.querySelector("#settingsClose").addEventListener("click", close);
 
   overlay.querySelectorAll(".level-btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -671,8 +704,67 @@ function renderSettings() {
     saveSettings();
   });
 
-  overlay.addEventListener("click", e => { if (e.target === overlay) document.body.removeChild(overlay); });
+  overlay.querySelector("#scanToggle").addEventListener("click", function () {
+    scanMode = !scanMode;
+    this.textContent = scanMode ? "ON" : "OFF";
+    this.classList.toggle("on", scanMode);
+    saveSettings();
+  });
+
+  overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
 }
+
+// ========= SCAN MODE =========
+// Auto-cycles a focus highlight through the visible buttons every 1.5 s.
+// Any non-modifier keypress selects the highlighted button. Designed for
+// switch-input users — most assistive switches emulate a keypress.
+let scanInterval = null;
+let scanIndex = 0;
+
+function scanTargets() {
+  const back     = Array.from(talkBreadcrumb.querySelectorAll("button"));
+  const cards    = Array.from(talkGrid.querySelectorAll("button"));
+  const controls = Array.from(document.querySelectorAll(".sentence-controls button:not(:disabled)"));
+  return [...back, ...cards, ...controls];
+}
+function clearScanFocus() {
+  document.querySelectorAll(".scan-focus").forEach(el => el.classList.remove("scan-focus"));
+}
+function advanceScan() {
+  const targets = scanTargets();
+  clearScanFocus();
+  if (!targets.length) return;
+  scanIndex = scanIndex % targets.length;
+  targets[scanIndex].classList.add("scan-focus");
+  scanIndex++;
+}
+function startScan() {
+  stopScan();
+  if (!scanMode) return;
+  scanIndex = 0;
+  advanceScan();
+  scanInterval = setInterval(advanceScan, 1500);
+}
+function stopScan() {
+  if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
+  clearScanFocus();
+}
+function selectFocused() {
+  const focused = document.querySelector(".scan-focus");
+  if (!focused) return;
+  stopScan();
+  focused.click();
+  // Resume scan after a short pause; if the click triggered a re-render,
+  // its own startScan() will already have run — startScan() is idempotent.
+  setTimeout(() => { if (scanMode) startScan(); }, 800);
+}
+document.addEventListener("keydown", (e) => {
+  if (!scanMode) return;
+  if (document.querySelector(".settings-overlay")) return;
+  if (e.metaKey || e.ctrlKey || e.altKey || e.key === "Tab") return;
+  e.preventDefault();
+  selectFocused();
+});
 
 // ========= CONTROLS =========
 document.getElementById("speakBtn").addEventListener("click", speakSentence);
@@ -681,13 +773,17 @@ document.getElementById("clearBtn").addEventListener("click", () => { clearSente
 document.getElementById("restartBtn").addEventListener("click", () => { clearSentence(); renderHome(); });
 document.getElementById("settingsBtn").addEventListener("click", renderSettings);
 
-// Prime audio + speech on first touch (iOS requirement)
-document.addEventListener("touchstart", function prime() {
+// Prime audio + speech on first user gesture. Touch covers the iPad case;
+// keydown covers switch users who never touch the screen.
+function primeAudio() {
   try { getAudioCtx().resume(); } catch (e) {}
   const u = new SpeechSynthesisUtterance("");
   synth.speak(u);
-  document.removeEventListener("touchstart", prime);
-}, { once: true });
+  document.removeEventListener("touchstart", primeAudio);
+  document.removeEventListener("keydown", primeAudio);
+}
+document.addEventListener("touchstart", primeAudio);
+document.addEventListener("keydown", primeAudio);
 
 // Initial render — wait for vocabulary fetch (with 3 s timeout fallback to DEFAULT_VOCAB)
 loadVocabulary().then(() => {
