@@ -137,3 +137,49 @@ used as a fallback if the network call fails or times out (5 s).
   (acceptable — doesn't block interaction); requires `GEMINI_API_KEY`
   env var set in Netlify dashboard.
 - **Follow-ups:** monitor free tier usage once real users arrive.
+
+---
+
+## ADR-0004: Working model — device constraint relaxed
+
+- **Date:** 2026-04-29
+- **Status:** Accepted
+
+### Context
+
+The original working model (carried in CLAUDE.md, .ai/context.md,
+docs/workflow.md, README.md, and .ai/conventions.md) framed iPad/Safari
++ no-terminal as a hard constraint. That hardware constraint no longer
+holds. The architectural choices that came out of it — single HTML file,
+no build step, push-to-main, free-tier-only — remain valid as design
+choices and should not be enforced via a hardware claim that doesn't
+apply.
+
+### Decision
+
+Remove the iPad/Safari/no-terminal/no-localhost framing from the docs.
+Keep the design choices that survive on their own merits (single HTML
+file, no build step, push-to-main, free-tier-only). Local development
+becomes an explicit, supported workflow alongside the deploy preview.
+
+Scope: this repo only. The user's global CLAUDE.md is unchanged.
+
+### Alternatives Considered
+
+- **Keep the constraint as documented.** Misleading; future contributors
+  would assume restrictions that don't apply.
+- **Rewrite as a "minimalism preference" rather than a hardware constraint.**
+  Adopted in part — the surviving rules (single file, no build) are now
+  framed as design choices, not hardware-driven absolutes.
+
+### Consequences
+
+- **Positive:** local-development paths (static server, IDE,
+  package-manager tooling) are available for verification when the
+  deploy preview is too slow or rate-limited (e.g. Netlify build
+  minutes). Docs accurately reflect what works.
+- **Negative:** loses some of the original "AI-first, no-terminal"
+  framing that shaped early Claude Code prompts. Mitigated: multi-chat
+  + push-to-main + deploy-preview-first norms remain.
+- **Follow-ups:** if a workflow change requires local tooling (e.g.
+  tests in a Node runner), record it as its own ADR.

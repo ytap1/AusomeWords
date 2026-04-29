@@ -34,20 +34,19 @@ AusomeWords is an AAC (Augmentative and Alternative Communication) app for autis
 
 ## Working Model
 
-Hard rules about how work happens here. Do not violate without asking.
+How work happens here. Use judgement; flag deviations.
 
-- **No local execution.** The user works from iPad/iPhone via Safari + Claude Code. There is no terminal, no `make`, no `npm`, no `curl localhost`.
-- **No CLI instructions in docs.** If a step needs a command, it has to run in CI or in Claude Code's own sandbox — never on the user's machine.
 - **Push directly to `main`** by default. Branch only for destructive or high-risk changes (schema rewrites, mass renames, deletions).
-- **Deploy is automatic** on push to `main` (GitHub Pages). Verification happens on the deployed preview, not localhost.
+- **Deploy is automatic** on push to `main` (Netlify; see ADR-0002). The deploy preview is the primary verification surface.
+- **Local development is fine** — a static server against `index.html` works for everything except the Gemini Function. The deploy preview catches anything local doesn't.
 - **Multi-chat workflow.** The user maintains separate Claude chats per concern (e.g. App Dev, Prompt Refinement). Stay in the lane named in the current chat unless told otherwise.
 
 ## Key Constraints
 
-- Single HTML file (`index.html`) — no build step, no bundler, no package manager.
+- Single HTML file (`index.html`) — no build step, no bundler.
+- One server-side surface: `netlify/functions/suggest.js` (Gemini proxy, holds `GEMINI_API_KEY`).
 - No new top-level dependencies without an ADR.
-- App is fully client-side; no secrets, no backend.
-- All verification happens on the GitHub Pages deploy preview — not localhost.
+- Free tier only — no paid databases, APIs, or hosting.
 
 ## Entry Points
 

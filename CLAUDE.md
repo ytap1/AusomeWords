@@ -2,14 +2,17 @@
 
 Read this first. Then `.ai/context.md`, then `.ai/conventions.md`.
 
-## Working Model (non-negotiable)
+## Working Model
 
-- **iPad/iPhone + Safari only.** No terminal, no laptop.
-- **No package managers, no localhost, no CLI instructions in docs.**
+- **Single HTML file, no build step.** The whole app is `index.html`
+  plus a small Netlify Function. No bundler or package manager required
+  to ship.
 - **Push directly to `main`** for routine changes. Branch only for
   destructive/high-risk work (schema rewrites, mass renames, deletions).
-- **Deploy auto-triggers on push to `main`** (GitHub Pages or Netlify).
-  Verify on the deployed URL, never localhost.
+- **Deploy auto-triggers on push to `main`** (Netlify; see ADR-0002).
+  The deploy preview is the primary verification surface; local
+  static-serve is fine for paths that don't depend on the Function.
+- **Free tier only.** No paid services (databases, APIs, hosting).
 - **Multi-chat workflow.** Each chat covers one concern (App Dev, Prompt
   Refinement, Docs, etc.). Stay in the lane named in the current chat.
 
@@ -17,7 +20,6 @@ Read this first. Then `.ai/context.md`, then `.ai/conventions.md`.
 
 - Short, accurate prose beats long, hedged prose.
 - No restating obvious context back to the user.
-- No CLI walkthroughs (the user can't run them).
 - Trim every doc you touch.
 
 ## Read in Order

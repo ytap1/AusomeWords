@@ -20,7 +20,7 @@ AusomeWords/
 │   ├── prompts.md
 │   └── metrics.md
 ├── docs/
-│   ├── workflow.md           # how work happens (no terminal)
+│   ├── workflow.md           # how work happens
 │   ├── architecture.md       # this file
 │   └── gemma4-integration.md # historical analysis, superseded by ADR-0003
 ├── .gitignore
@@ -96,13 +96,14 @@ Rules:
 
 ## Verification
 
-The user has no terminal. Verification happens in two places:
+Verification options, in order of fidelity:
 
+- **Deploy preview** — auto-deployed Netlify site after push to `main`. Production-equivalent; primary verification surface.
+- **Local static server** — fine for everything except the Gemini Function. Stub `/.netlify/functions/suggest` or accept the local-rule fallback.
 - **CI** — whatever checks the project wires up (lint, type-check, tests).
-- **Deploy preview** — the auto-deployed Netlify site after push to `main`.
 
-Tests that need a localhost don't fit this model. Prefer:
+Prefer:
 
 - Unit tests that run in CI.
 - Smoke checks against the deployed URL.
-- Manual spot-checks the user can do in Safari.
+- Manual spot-checks in any modern browser (it's a static page).

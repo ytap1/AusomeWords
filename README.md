@@ -11,11 +11,11 @@
 
 ## How Work Happens Here
 
-- Edits via Claude Code (GitHub integration) or the GitHub web editor on Safari.
-- No local dev, no terminal, no package managers — never assume them.
+- Single HTML file — any editor works (Claude Code, GitHub web editor, or a local IDE).
+- No build step, no package manager required to ship.
 - Push directly to `main` by default. Branch only for destructive or high-risk changes.
 - Deploy is auto-triggered on push to `main` (Netlify; see ADR-0002).
-- Verification happens on the deployed preview, not on a localhost.
+- Primary verification on the deploy preview; local static-serve covers non-Function paths.
 
 See [docs/workflow.md](./docs/workflow.md) for the full working model.
 

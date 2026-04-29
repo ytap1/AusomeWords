@@ -5,14 +5,9 @@ this file, this file wins.
 
 ## Operating Constraints
 
-- **Devices:** iPad and iPhone only. No laptop, no desktop, no terminal.
-- **Browser:** Safari only.
-- **Editor:** the GitHub web editor for tiny edits; Claude Code (via
-  GitHub integration) for everything else.
-- **No package managers.** Never `npm`, `pip`, `uv`, `cargo`, `brew`,
-  `apt`, etc. on the user's side. If a step needs one, it runs in CI or
-  in Claude Code's own sandbox.
-- **No localhost.** The user can't browse `http://localhost:anything`.
+- **Editor:** any — Claude Code, GitHub web editor, or a local IDE all work. The repo is a single HTML file plus a tiny Netlify Function, so any editor that can save text is enough.
+- **Build:** none. Saves go straight to disk; deploy is just `git push`.
+- **Free tier only.** No paid services (databases, APIs, hosting).
 
 ## Branching
 
@@ -28,22 +23,19 @@ this file, this file wins.
 ## Deploy
 
 - Auto-triggered on push to `main`.
-- Target: GitHub Pages or Netlify (per project — list which in
-  `.ai/context.md` → Entry Points).
-- Treat the deployed URL as the only "real" environment.
+- Target: Netlify (see `.ai/context.md` → Entry Points and ADR-0002).
+- Treat the deploy preview as the production-equivalent environment.
 - Rollback path: `git revert` the bad commit; auto-deploy re-runs.
 
 ## Verification
 
-The user can't run anything locally. Claude verifies changes by:
+Verification options, in order of fidelity:
 
-1. **CI** — whatever the repo wires up (lint, type-check, tests).
-2. **Deploy preview** — fetch the deployed URL, inspect the response.
-3. **Manual spot-check** — describe to the user what to tap/look at on
-   the live site, in plain language.
+1. **Deploy preview** — push, check the live URL on Netlify. Production-equivalent; primary verification surface.
+2. **Local static server** — fine for cards / sentence / speech / storage paths. The Gemini Function only runs on the deploy preview, so the L2/L3 banner content can't be verified locally — stub the fetch or accept the local-rule fallback.
+3. **CI** — whatever the repo wires up (lint, type-check, tests).
 
-If a change is impossible to verify any of those ways, say so explicitly
-instead of claiming it works.
+If a change is impossible to verify any of those ways, say so explicitly instead of claiming it works.
 
 ## Multi-Chat Workflow
 

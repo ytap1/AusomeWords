@@ -41,8 +41,6 @@ Do not do these without first updating `.ai/decisions.md`.
 - Disabling a test silently. Fix it or delete it.
 - Committing generated files (other than lockfiles).
 - Committing secrets. Use the project's env var mechanism.
-- CLI instructions in docs (the user has no terminal — see `.ai/context.md`
-  → Working Model).
 
 ## When Adding New Code
 
@@ -52,8 +50,9 @@ Do not do these without first updating `.ai/decisions.md`.
 3. **Types / schemas updated?**
 4. **Docs updated?** If public-facing behavior changed: `README.md`,
    `.ai/context.md`, or `docs/`.
-5. **Verifiable on the deploy preview?** The user can't run anything
-   locally — if the change isn't observable on the deployed site or via
-   CI, say so explicitly.
+5. **Verifiable on the deploy preview?** Local static-serve covers most
+   paths; the Gemini Function only runs on the deploy preview. If a
+   change isn't observable via local serve, deploy preview, or CI, say
+   so explicitly.
 6. **Diff minimal?** No drive-by renames, no unrelated formatting.
 7. **Removed what you replaced?** No dead code, no commented-out blocks.
