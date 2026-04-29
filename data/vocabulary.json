@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "starters": [
     { "word": "I want", "emoji": "🙋", "next": "categories" },
     { "word": "I need", "emoji": "🆘", "next": "needs" },
@@ -13,41 +13,41 @@
   ],
   "items": {
     "food": [
-      { "word": "burger",           "emoji": "🍔", "color": "c-red" },
-      { "word": "chicken and rice", "emoji": "🍗", "color": "c-orange" },
-      { "word": "cupcakes",         "emoji": "🧁", "color": "c-pink" },
-      { "word": "food",             "emoji": "🍽️", "color": "c-green" }
+      { "word": "burger",           "emoji": "🍔", "color": "c-red",    "pos": "noun-count" },
+      { "word": "chicken and rice", "emoji": "🍗", "color": "c-orange", "pos": "noun-mass" },
+      { "word": "cupcakes",         "emoji": "🧁", "color": "c-pink",   "pos": "noun-plural" },
+      { "word": "food",             "emoji": "🍽️", "color": "c-green",  "pos": "noun-mass" }
     ],
     "drinks": [
-      { "word": "water", "emoji": "💧", "color": "c-blue" },
-      { "word": "bubu",  "emoji": "🍼", "color": "c-blue" }
+      { "word": "water", "emoji": "💧", "color": "c-blue", "pos": "noun-mass" },
+      { "word": "bubu",  "emoji": "🍼", "color": "c-blue", "pos": "noun-proper" }
     ],
     "activities": [
-      { "word": "run",           "emoji": "🏃", "color": "c-orange" },
-      { "word": "jump",          "emoji": "🐸", "color": "c-green" },
-      { "word": "slides",        "emoji": "🛝", "color": "c-yellow" },
-      { "word": "tickle time",   "emoji": "😄", "color": "c-pink" },
-      { "word": "hide and seek", "emoji": "🙈", "color": "c-purple" }
+      { "word": "run",           "emoji": "🏃", "color": "c-orange", "pos": "verb-action" },
+      { "word": "jump",          "emoji": "🐸", "color": "c-green",  "pos": "verb-action" },
+      { "word": "slides",        "emoji": "🛝", "color": "c-yellow", "pos": "play-equipment" },
+      { "word": "tickle time",   "emoji": "😄", "color": "c-pink",   "pos": "noun-event" },
+      { "word": "hide and seek", "emoji": "🙈", "color": "c-purple", "pos": "game" }
     ],
     "colors": [
-      { "word": "red car",       "emoji": "🚗", "color": "c-red" },
-      { "word": "blue ball",     "emoji": "🔵", "color": "c-blue" },
-      { "word": "yellow sun",    "emoji": "☀️", "color": "c-yellow" },
-      { "word": "green tree",    "emoji": "🌳", "color": "c-green" },
-      { "word": "orange ball",   "emoji": "🟠", "color": "c-orange" },
-      { "word": "purple flower", "emoji": "💜", "color": "c-purple" }
+      { "word": "red car",       "emoji": "🚗", "color": "c-red",    "pos": "noun-count-color" },
+      { "word": "blue ball",     "emoji": "🔵", "color": "c-blue",   "pos": "noun-count-color" },
+      { "word": "yellow sun",    "emoji": "☀️", "color": "c-yellow", "pos": "noun-unique" },
+      { "word": "green tree",    "emoji": "🌳", "color": "c-green",  "pos": "noun-count-color" },
+      { "word": "orange ball",   "emoji": "🟠", "color": "c-orange", "pos": "noun-count-color" },
+      { "word": "purple flower", "emoji": "💜", "color": "c-purple", "pos": "noun-count-color" }
     ],
     "social": [
-      { "word": "yes",    "emoji": "✅", "color": "c-green" },
-      { "word": "no",     "emoji": "❌", "color": "c-red" },
-      { "word": "please", "emoji": "🙏", "color": "c-blue" },
-      { "word": "borrow", "emoji": "🤝", "color": "c-orange" }
+      { "word": "yes",    "emoji": "✅", "color": "c-green",  "pos": "social" },
+      { "word": "no",     "emoji": "❌", "color": "c-red",    "pos": "social" },
+      { "word": "please", "emoji": "🙏", "color": "c-blue",   "pos": "social" },
+      { "word": "borrow", "emoji": "🤝", "color": "c-orange", "pos": "social", "spoken": "Can I borrow that?" }
     ],
     "needs": [
-      { "word": "bathroom", "emoji": "🚽", "color": "c-blue" },
-      { "word": "help",     "emoji": "🙏", "color": "c-pink" },
-      { "word": "more",     "emoji": "➕", "color": "c-green" },
-      { "word": "finished", "emoji": "✅", "color": "c-green" }
+      { "word": "bathroom", "emoji": "🚽", "color": "c-blue",  "pos": "place-the" },
+      { "word": "help",     "emoji": "🙏", "color": "c-pink",  "pos": "noun-mass" },
+      { "word": "more",     "emoji": "➕", "color": "c-green", "pos": "quantifier" },
+      { "word": "finished", "emoji": "✅", "color": "c-green", "pos": "state-im" }
     ]
   },
   "polite": { "word": "please", "emoji": "🙏" }

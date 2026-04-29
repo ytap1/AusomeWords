@@ -280,41 +280,41 @@ const DEFAULT_VOCAB = {
   ],
   items: {
     food: [
-      { word: "burger",           emoji: "🍔", color: "c-red"    },
-      { word: "chicken and rice", emoji: "🍗", color: "c-orange" },
-      { word: "cupcakes",         emoji: "🧁", color: "c-pink"   },
-      { word: "food",             emoji: "🍽️", color: "c-green"  },
+      { word: "burger",           emoji: "🍔", color: "c-red",    pos: "noun-count"  },
+      { word: "chicken and rice", emoji: "🍗", color: "c-orange", pos: "noun-mass"   },
+      { word: "cupcakes",         emoji: "🧁", color: "c-pink",   pos: "noun-plural" },
+      { word: "food",             emoji: "🍽️", color: "c-green",  pos: "noun-mass"   },
     ],
     drinks: [
-      { word: "water", emoji: "💧", color: "c-blue" },
-      { word: "bubu",  emoji: "🍼", color: "c-blue" },
+      { word: "water", emoji: "💧", color: "c-blue", pos: "noun-mass"   },
+      { word: "bubu",  emoji: "🍼", color: "c-blue", pos: "noun-proper" },
     ],
     activities: [
-      { word: "run",           emoji: "🏃",  color: "c-orange" },
-      { word: "jump",          emoji: "🐸",  color: "c-green"  },
-      { word: "slides",        emoji: "🛝",  color: "c-yellow" },
-      { word: "tickle time",   emoji: "😄",  color: "c-pink"   },
-      { word: "hide and seek", emoji: "🙈",  color: "c-purple" },
+      { word: "run",           emoji: "🏃",  color: "c-orange", pos: "verb-action"     },
+      { word: "jump",          emoji: "🐸",  color: "c-green",  pos: "verb-action"     },
+      { word: "slides",        emoji: "🛝",  color: "c-yellow", pos: "play-equipment"  },
+      { word: "tickle time",   emoji: "😄",  color: "c-pink",   pos: "noun-event"      },
+      { word: "hide and seek", emoji: "🙈",  color: "c-purple", pos: "game"            },
     ],
     colors: [
-      { word: "red car",       emoji: "🚗", color: "c-red"    },
-      { word: "blue ball",     emoji: "🔵", color: "c-blue"   },
-      { word: "yellow sun",    emoji: "☀️", color: "c-yellow" },
-      { word: "green tree",    emoji: "🌳", color: "c-green"  },
-      { word: "orange ball",   emoji: "🟠", color: "c-orange" },
-      { word: "purple flower", emoji: "💜", color: "c-purple" },
+      { word: "red car",       emoji: "🚗", color: "c-red",    pos: "noun-count-color" },
+      { word: "blue ball",     emoji: "🔵", color: "c-blue",   pos: "noun-count-color" },
+      { word: "yellow sun",    emoji: "☀️", color: "c-yellow", pos: "noun-unique"      },
+      { word: "green tree",    emoji: "🌳", color: "c-green",  pos: "noun-count-color" },
+      { word: "orange ball",   emoji: "🟠", color: "c-orange", pos: "noun-count-color" },
+      { word: "purple flower", emoji: "💜", color: "c-purple", pos: "noun-count-color" },
     ],
     social: [
-      { word: "yes",    emoji: "✅", color: "c-green"  },
-      { word: "no",     emoji: "❌", color: "c-red"    },
-      { word: "please", emoji: "🙏", color: "c-blue"   },
-      { word: "borrow", emoji: "🤝", color: "c-orange" },
+      { word: "yes",    emoji: "✅", color: "c-green",  pos: "social" },
+      { word: "no",     emoji: "❌", color: "c-red",    pos: "social" },
+      { word: "please", emoji: "🙏", color: "c-blue",   pos: "social" },
+      { word: "borrow", emoji: "🤝", color: "c-orange", pos: "social", spoken: "Can I borrow that?" },
     ],
     needs: [
-      { word: "bathroom", emoji: "🚽", color: "c-blue"  },
-      { word: "help",     emoji: "🙏", color: "c-pink"  },
-      { word: "more",     emoji: "➕", color: "c-green" },
-      { word: "finished", emoji: "✅", color: "c-green" },
+      { word: "bathroom", emoji: "🚽", color: "c-blue",  pos: "place-the"  },
+      { word: "help",     emoji: "🙏", color: "c-pink",  pos: "noun-mass"  },
+      { word: "more",     emoji: "➕", color: "c-green", pos: "quantifier" },
+      { word: "finished", emoji: "✅", color: "c-green", pos: "state-im"   },
     ],
   },
   polite: { word: "please", emoji: "🙏" },
@@ -324,6 +324,17 @@ let STARTERS   = DEFAULT_VOCAB.starters;
 let CATEGORIES = DEFAULT_VOCAB.categories;
 let ITEMS      = DEFAULT_VOCAB.items;
 let POLITE     = DEFAULT_VOCAB.polite;
+
+let LEXICON = {};
+function rebuildLexicon() {
+  LEXICON = {};
+  Object.values(ITEMS).forEach(arr => {
+    arr.forEach(it => {
+      LEXICON[it.word] = { pos: it.pos || null, spoken: it.spoken || null };
+    });
+  });
+}
+rebuildLexicon();
 
 async function loadVocabulary() {
   try {
@@ -337,6 +348,7 @@ async function loadVocabulary() {
     if (Array.isArray(data.categories)) CATEGORIES = data.categories;
     if (data.items && typeof data.items === "object") ITEMS = data.items;
     if (data.polite && typeof data.polite === "object") POLITE = data.polite;
+    rebuildLexicon();
   } catch (_) { /* keep defaults */ }
 }
 
@@ -366,37 +378,49 @@ const talkBreadcrumb  = document.getElementById("talkBreadcrumb");
 const talkSuggestion  = document.getElementById("talkSuggestion");
 const speakBtn        = document.getElementById("speakBtn");
 
-// ========= CORRECTION ENGINE =========
-const NO_ARTICLE  = new Set(["food","water","bubu","help","more","finished",
-                              "bathroom","yes","no","please","borrow",
-                              "run","jump","slides","hide and seek","tickle time"]);
-const THE_ARTICLE = new Set(["bathroom"]);
-const COLOR_WORDS = new Set(["red","blue","yellow","green","orange","purple","pink"]);
+// ========= GRAMMAR =========
+// Phonetic-head a/an. Covers vowel-sound words written with consonants
+// ("hour", "honest") and vowel-letter starts. The current vocab triggers
+// the "an orange" case via the noun-count-color branch.
+function aOrAn(phrase) {
+  return /^([aeiou]|hou|hon)/i.test(phrase) ? "an" : "a";
+}
+
+function renderItemPhrase(word) {
+  const meta = LEXICON[word] || {};
+  if (meta.spoken) return meta.spoken;
+  switch (meta.pos) {
+    case "noun-count":
+    case "noun-count-color": return `${aOrAn(word)} ${word}`;
+    case "noun-unique":
+    case "place-the":        return `the ${word}`;
+    case "verb-action":      return `to ${word}`;
+    case "play-equipment":   return `to go on the ${word}`;
+    case "game":             return `to play ${word}`;
+    default:                 return word;
+  }
+}
+
+function assembleSpoken(words) {
+  if (!words.length) return "";
+  const polite = words[words.length - 1] === POLITE.word;
+  const core = polite ? words.slice(0, -1) : words.slice();
+  if (!core.length) return "Please.";
+  const starter = core[0];
+  const item = core[1];
+  // state-im swaps the starter and drops "please" — "I need finished, please" → "I'm finished."
+  if (item && (LEXICON[item] || {}).pos === "state-im") return `I'm ${item}.`;
+  if (!item) return `${starter}.`;
+  const phrase = `${starter} ${renderItemPhrase(item)}`;
+  return polite ? `${phrase}, please.` : `${phrase}.`;
+}
 
 function localSuggestion(words) {
-  try {
-    if (!words.length) return null;
-    const result = [...words];
-
-    if (result.length >= 2 && (result[0] === "I want" || result[0] === "I need")) {
-      const noun  = result[1];
-      const lower = noun.toLowerCase();
-      if (THE_ARTICLE.has(lower)) {
-        result.splice(1, 0, "the");
-      } else if (!NO_ARTICLE.has(lower) && !noun.endsWith("s")) {
-        const firstWord = noun.split(" ")[0].toLowerCase();
-        const article   = COLOR_WORDS.has(firstWord) ? "a" : (/^[aeiou]/i.test(noun) ? "an" : "a");
-        result.splice(1, 0, article);
-      }
-    }
-
-    if (result[result.length - 1] !== "please") result.push("please");
-
-    const suggestion = result.join(" ");
-    return suggestion !== words.join(" ") ? suggestion : null;
-  } catch (_) {
-    return null;
-  }
+  if (!words.length) return null;
+  const suggestion = assembleSpoken(words);
+  if (!suggestion) return null;
+  const normalize = s => s.replace(/[.,!?]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+  return normalize(suggestion) !== normalize(words.join(" ")) ? suggestion : null;
 }
 
 async function fetchSuggestion(words, level) {
@@ -434,7 +458,7 @@ function renderSentence() {
 function addWord(word)    { sentence.push(word); renderSentence(); speak(word, { rate: 0.9 }); }
 function removeLastWord() { sentence.pop(); renderSentence(); }
 function clearSentence()  { sentence = []; talkSuggestion.innerHTML = ""; renderSentence(); }
-function speakSentence()  { if (!sentence.length) return; speak(sentence.join(" "), { rate: 0.85 }); }
+function speakSentence()  { if (!sentence.length) return; speak(assembleSpoken(sentence), { rate: 0.85 }); }
 
 function createCard(label, emoji, color, isStarter) {
   const btn = document.createElement("button");
@@ -507,7 +531,7 @@ function renderItems(key, label) {
     const card = createCard(it.word, it.emoji, it.color, false);
     card.addEventListener("click", () => {
       if (isSocial) {
-        speak(it.word, { rate: 0.9 });
+        speak(it.spoken || it.word, { rate: 0.9 });
         playHappyChime();
         setTimeout(() => renderHome(), 1500);
       } else {
