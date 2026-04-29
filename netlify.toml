@@ -3,3 +3,8 @@
 
 [functions]
   directory = "netlify/functions"
+
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300, stale-while-revalidate=86400"
